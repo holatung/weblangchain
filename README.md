@@ -61,12 +61,15 @@ Note that LangServe is not currently supported in JS, and customization of the r
 
 The general retrieval flow looks like this:
 
+```
 1. Pull in raw content related to the user's initial query using a retriever that wraps Tavily's Search API.
     - For subsequent conversation turns, we also rephrase the original query into a "standalone query" free of references to previous chat history.
 2. Because the size of the raw documents usually exceed the maximum context window size of the model, we perform additional [contextual compression steps](https://python.langchain.com/docs/modules/data_connection/retrievers/contextual_compression/) to filter what we pass to the model.
     - First, we split retrieved documents using a [text splitter](https://python.langchain.com/docs/modules/data_connection/document_transformers/).
     - Then we use an [embeddings filter](https://python.langchain.com/docs/modules/data_connection/retrievers/contextual_compression/#embeddingsfilter) to remove any chunks that do not meet a similarity threshold with the initial query.
 3. The retrieved context, the chat history, and the original question are passed to the LLM as context for the final generation.
+
+```
 
 Here's a LangSmith trace illustrating the above:
 
